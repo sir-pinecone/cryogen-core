@@ -237,7 +237,7 @@
 
 (defn compile-index
   "Compiles the index page into html and spits it out into the public folder"
-  [{:keys [blog-prefix disqus?] :as params}]
+  [{:keys [blog-prefix disqus?] :as params} posts]
   (println (blue "compiling index"))
   (spit (str public blog-prefix "/index.html")
         (render-file "templates/html/layouts/home.html"
@@ -245,6 +245,7 @@
                             {:home    true
                              :disqus? disqus?
                              :post    (get-in params [:latest-posts 0])
+                             :posts   posts
                              :uri     (str blog-prefix "/index.html")}))))
 
 (defn compile-archives
@@ -312,7 +313,7 @@
     (compile-pages params pages)
     (compile-posts params posts)
     (compile-tags params posts-by-tag)
-    (compile-index params)
+    (compile-index params posts)
     (compile-archives params posts)
     (println (blue "generating site map"))
     (spit (str public blog-prefix "/sitemap.xml") (sitemap/generate site-url ignored-files))
